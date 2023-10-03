@@ -42,7 +42,19 @@ class Task(db.Model, SerializerMixin):
     completed = db.Column(db.Boolean, default=False)
     task_list_id = db.Column(db.Integer, db.ForeignKey("task_lists.id"), nullable=False)
 
-    labels = db.relationship("Label", secondary="task_labes", back_populates="tasks")
+    labels = db.relationship("Label", secondary="task_labels", backref="tasks")
 
     def __repr__(self):
         return f"Task {self.title} {self.description} {self.completed} {self.due_date}"
+
+
+class Label(db.Model, SerializerMixin):
+    __tablename__ = "labels"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(20), nullable=False, unique=True)
+
+    tasks = db.relationship("Task", secondary="task_labels", backref="labels")
+
+    def __repr__(self):
+        return f"Label {self.name}"
