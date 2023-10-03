@@ -58,3 +58,20 @@ class Label(db.Model, SerializerMixin):
 
     def __repr__(self):
         return f"Label {self.name}"
+
+
+class TaskLabel(db.Model, SerializerMixin):
+    __tablename__ = "task_labels"
+
+    id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    updated_at = db.Column(db.DateTime, onupdate=db.func.now())
+
+    task_id = db.Column(db.Integer, db.ForeignKey("tasks.id", nullable=False))
+    task = db.relationship("Task", backref=db.backref("task_labels", lazy=True))
+
+    label_id = db.Column(db.Integer, db.ForeignKey("labels.id", nullable=False))
+    label = db.relationship("Label", backref=db.backref("task_labels", lazy=True))
+
+    def __repr__(self):
+        return f"TaskLabel {self.task.title} - {self.label.name}"
