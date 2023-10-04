@@ -1,4 +1,4 @@
-from myapp import app, db
+from myapp import app, db, routes
 from myapp.models import User, Task, Task_List, Label, TaskLabel
 
 if __name__ == "__main__":

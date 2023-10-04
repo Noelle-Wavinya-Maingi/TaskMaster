@@ -1,5 +1,5 @@
 #!/bin/sh
-'''exec' "/home/noelle/Documents/Phase 4/TaskMaster/TaskMaster/bin/python" "$0" "$@"
+'''exec' "/home/noelle/Documents/Phase 4/TaskMaster/TaskMaster/bin/python3" "$0" "$@"
 ' '''
 # -*- coding: utf-8 -*-
 import re
