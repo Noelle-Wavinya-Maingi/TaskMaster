@@ -1,7 +1,8 @@
 # Import necessary modules
+from datetime import datetime
 from myapp import api, db, bcrypt
 from flask import request, jsonify, make_response
-from myapp.models import User, Task_List
+from myapp.models import User, Task_List, Task
 from flask_restful import Resource
 from flask_jwt_extended import (
     create_access_token,
@@ -220,10 +221,215 @@ class TaskListByID(Resource):
             response_dict = {"errors": ["An error occurred: " + str(e)]}
             response = make_response(jsonify(response_dict), 500)
         return response
+    
+class TaskResource(Resource):
+    @jwt_required()
+    def get(self):
+        try:
+            # Get the current user's identity from JWT
+            current_user_id = get_jwt_identity()
 
+            print(f"Current User ID: {current_user_id}")  # Debugging line
+
+            # Query the database for tasks associated with the current user
+            tasks = Task.query.join(Task_List).filter(Task_List.user_id == current_user_id).all()
+
+            print(f"Tasks: {tasks}")  # Debugging line
+
+            if not tasks:
+                response_dict = {"message": "No tasks yet"}
+                return make_response(jsonify(response_dict), 200)
+
+            task_data = []
+            for task in tasks:
+                task_item = {
+                    "id": task.id,
+                    "title": task.title,
+                    "description": task.description,
+                    "due_date": task.due_date.strftime("%Y-%m-%d %H:%M:%S") if task.due_date else None,
+                    "completed": task.completed
+                }
+                task_data.append(task_item)
+            response_dict = {
+                "message": "Tasks retrieved successfully",
+                "tasks": task_data
+            }
+            response = make_response(jsonify(response_dict), 200)
+            return response
+        except Exception as e:
+            response_dict = {"errors": str(e)}
+            response = make_response(jsonify(response_dict), 500)
+            return response
+     
+    @jwt_required()
+    def post(self):
+            try:
+
+                # Get the current user's identity using JWT
+                current_user_id = get_jwt_identity()
+
+                # Parse JSON daat from request body
+                data = request.get_json()
+
+                title = data.get("title")
+                description = data.get("description")
+                due_date_str = data.get("due_date")
+                task_list_name = data.get("task_list_name")
+
+                if due_date_str:
+                    due_date = datetime.strptime(due_date_str, "%Y-%m-%dT%H:%M:%S")
+
+                else:
+                    due_date = None
+                
+                # Find the task list by name associated wtth the current user
+                task_list = Task_List.query.filter_by(user_id= current_user_id, title=task_list_name).first()
+
+                if not task_list:
+                    return {"message" : f"Task list {task_list_name} not found!"}, 404
+                
+                # Create a new task and associate it with the found task list
+                new_task = Task(
+                    title = title,
+                    description = description,
+                    due_date = due_date,
+                    task_list_id = task_list.id
+                )
+
+                db.session.add(new_task)
+                db.session.commit()
+
+                return {"message" : "Task Created successfully"}, 201
+            
+            except Exception as e:
+                return {"error" : str(e)}, 500
+
+class TaskById(Resource):
+    @jwt_required()
+    def get(self, id):
+        try:
+            # Get the current user's identity from the JWT
+            current_user_id = get_jwt_identity()
+            print("Current User ID:", current_user_id)
+            print("Task ID to retrieve", id)
+
+            # Query the database for the task by ID and user association
+            task = Task.query.filter_by(
+                id=id
+            ).first()
+            print("Task:", task)
+
+            if not task:
+                return {"message": "Task not found"}, 404
+
+            # Serialize the task data
+            task_data = {
+                "id": task.id,
+                "title": task.title,
+                "description": task.description,
+                "due_date": task.due_date.strftime("%Y-%m-%d %H:%M:%S") if task.due_date else None,
+                "completed": task.completed,
+            }
+
+            response_dict = {
+                "message": "Task retrieved successfully",
+                "task": task_data,
+            }
+
+            response = make_response(jsonify(response_dict), 200)
+        except Exception as e:
+            response_dict = {"errors": ["An error occurred: " + str(e)]}
+            response = make_response(jsonify(response_dict), 500)
+        return response
+
+    @jwt_required()
+    def patch(self, id):
+        try:
+            # Get the current user's identity from the JWT
+            current_user_id = get_jwt_identity()
+
+            # Query the database for the task to update
+            task = Task.query.filter_by(id=id).first()
+
+            if not task:
+                return {"message": "Task not found"}, 404
+
+            # Get the associated task list for the task
+            task_list = Task_List.query.filter_by(id=task.task_list_id).first()
+
+            # Ensure that the task list belongs to the current user
+            if not task_list or task_list.user_id != current_user_id:
+                return {"message": "Task does not belong to the current user"}, 403
+
+            # Parse JSON data from the request body
+            data = request.get_json()
+            title = data.get("title")
+            description = data.get("description")
+
+            # Update the task attributes
+            if title:
+                task.title = title
+            if description:
+                task.description = description
+
+            # Commit the changes to the database
+            db.session.commit()
+
+            # Serialize and return the updated Task data
+            response_dict = {
+                "message": "Task updated successfully",
+                "task": {
+                    "id": task.id,
+                    "title": task.title,
+                    "description": task.description,
+                    "due_date": task.due_date.strftime("%Y-%m-%d %H:%M:%S") if task.due_date else None,
+                    "completed": task.completed,
+                },
+            }
+
+            response = make_response(jsonify(response_dict), 200)
+        except Exception as e:
+            response_dict = {"errors": ["An error occurred: " + str(e)]}
+            response = make_response(jsonify(response_dict), 500)
+        return response
+
+
+    @jwt_required()
+    def delete(self, id):
+        try:
+            # Get the current user's identity from the JWT
+            current_user_id = get_jwt_identity()
+
+            # Query the database for the task to delete
+            task = Task.query.filter_by(id=id).first()
+
+            if not task:
+                return {"message": "Task not found"}, 404
+
+            # Get the associated task list for the task
+            task_list = Task_List.query.filter_by(id=task.task_list_id).first()
+
+            # Ensure that the task list belongs to the current user
+            if not task_list or task_list.user_id != current_user_id:
+                return {"message": "Task does not belong to the current user"}, 403
+
+            # Delete the task from the database
+            db.session.delete(task)
+            db.session.commit()
+
+            return {"message": "Task deleted successfully"}, 204
+        except Exception as e:
+            response_dict = {"errors": ["An error occurred: " + str(e)]}
+            response = make_response(jsonify(response_dict), 500)
+        return response
+
+
+                
 
 # Specify the routes and resources
 api.add_resource(UserRegistrationResource, "/register")
 api.add_resource(UserLoginResource, "/login")
 api.add_resource(TaskLists, "/tasklist")
 api.add_resource(TaskListByID, "/tasklist/<int:id>")
+api.add_resource(TaskResource, '/tasks')
+api.add_resource(TaskById, '/task/<int:id>')
