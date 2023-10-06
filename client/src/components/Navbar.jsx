@@ -36,7 +36,7 @@ const Navbar = () => {
             </li>
             <li className="nav-item">
               <NavLink className="nav-link" to="/logout">
-                <i class="fas fa-sign-out-alt fa-sm"></i>&nbsp; Logout
+                <i className="fas fa-sign-out-alt fa-sm"></i>&nbsp; Logout
               </NavLink>
             </li>
           </ul>

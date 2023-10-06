@@ -16,7 +16,7 @@ function Home() {
         <div className="col-md-4"></div>
       </div>
       <button onClick={handleLoginClick} className="btn btn-primary mt-4">
-        <i class="fas fa-sign-in-alt fa-sm"></i>&nbsp; Login
+        <i className="fas fa-sign-in-alt fa-sm"></i>&nbsp; Login
       </button>
     </div>
   );

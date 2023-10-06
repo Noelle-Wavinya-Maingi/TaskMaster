@@ -75,7 +75,7 @@ function Login() {
             required
           />
         </div>
-        <button type="submit" className="btn btn-primary"><i class="fas fa-sign-in-alt fa-sm"></i>&nbsp;
+        <button type="submit" className="btn btn-primary"><i className="fas fa-sign-in-alt fa-sm"></i>&nbsp;
           Login
         </button>
       </form>

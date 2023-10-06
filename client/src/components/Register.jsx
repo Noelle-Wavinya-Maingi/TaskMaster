@@ -144,7 +144,7 @@ function Register() {
 
         {/* Submit Button */}
         <button type="submit" className="btn btn-primary">
-          <i class="fa fa-user-plus fa-sm"></i>&nbsp; Register
+          <i className="fa fa-user-plus fa-sm"></i>&nbsp; Register
         </button>
       </form>
 
