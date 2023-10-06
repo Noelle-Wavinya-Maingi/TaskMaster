@@ -295,46 +295,62 @@ class TaskResource(Resource):
      
     @jwt_required()
     def post(self):
-            try:
+        print("Hey")
+        try:
+        # Get the current user's identity using JWT
+            current_user_id = get_jwt_identity()
+            print(current_user_id)
 
-                # Get the current user's identity using JWT
-                current_user_id = get_jwt_identity()
+            # Parse JSON data from the request body
+            data = request.get_json()
+            print('getting data')
 
-                # Parse JSON daat from request body
-                data = request.get_json()
-
-                title = data.get("title")
-                description = data.get("description")
-                due_date_str = data.get("due_date")
-                task_list_name = data.get("task_list_name")
-
-                if due_date_str:
-                    due_date = datetime.strptime(due_date_str, "%Y-%m-%dT%H:%M:%S")
-
-                else:
-                    due_date = None
-                
-                # Find the task list by name associated wtth the current user
-                task_list = Task_List.query.filter_by(user_id= current_user_id, title=task_list_name).first()
-
-                if not task_list:
-                    return {"message" : f"Task list {task_list_name} not found!"}, 404
-                
-                # Create a new task and associate it with the found task list
-                new_task = Task(
-                    title = title,
-                    description = description,
-                    due_date = due_date,
-                    task_list_id = task_list.id
-                )
-
-                db.session.add(new_task)
-                db.session.commit()
-
-                return {"message" : "Task Created successfully"}, 201
+            title = data.get("title")
+            description = data.get("description")
+            due_date_str = data.get("due_date")
+            task_list_name = data.get("task_list_name")
             
-            except Exception as e:
-                return {"error" : str(e)}, 500
+            # Debugging line to print the received data
+            print(f"Received data: {data}")
+
+            if due_date_str:
+                due_date = datetime.strptime(due_date_str, "%Y-%m-%dT%H:%M:%S")
+            else:
+                due_date = None
+
+            # Debugging line to print the parsed data
+            print(f"Parsed data - title: {title}, description: {description}, due_date: {due_date}, task_list_name: {task_list_name}")
+
+            # Find the task list by name associated with the current user
+            task_list = Task_List.query.filter_by(user_id=current_user_id, title=task_list_name).first()
+
+            if not task_list:
+                # Debugging line to print the task list not found message
+                print(f"Task list {task_list_name} not found!")
+
+                return {"message": f"Task list {task_list_name} not found!"}, 404
+
+            # Create a new task and associate it with the found task list
+            new_task = Task(
+                title=title,
+                description=description,
+                due_date=due_date,
+                task_list_id=task_list.id
+            )
+
+            # Debugging line to print the newly created task
+            print(f"New task created: {new_task}")
+
+            db.session.add(new_task)
+            db.session.commit()
+
+            return {"message": "Task Created successfully"}, 201
+
+        except Exception as e:
+        # Debugging line to print the error message
+            print(f"Error: {str(e)}")
+
+            return {"error": str(e)}, 500
 
 class TaskById(Resource):
     @jwt_required()
