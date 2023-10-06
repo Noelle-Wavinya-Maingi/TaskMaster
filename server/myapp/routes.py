@@ -28,12 +28,12 @@ class UserRegistrationResource(Resource):
             # Check if the username already exists
             existing_user = User.query.filter_by(username=username).first()
             if existing_user:
-                return {"message": "Username already exists"}, 400
+                return {"message": "Username already exists"}, 409
 
             # Check if the email already exists
             existing_email = User.query.filter_by(email=email).first()
             if existing_email:
-                return {"message": "Email already exists"}, 400
+                return {"message": "Email already exists"}, 409
 
             # Hash the password using Flask-Bcrypt
             hashed_password = bcrypt.generate_password_hash(password).decode("utf-8")
@@ -120,6 +120,37 @@ class TaskLists(Resource):
         except Exception as e:
             response_dict = {"errors": str(e)}
             response = make_response(jsonify(response_dict), 500)
+        return response
+    
+    @jwt_required()
+    def post(self):
+        try:
+            #Get the current user's identity from JWT
+            current_user_id = get_jwt_identity()
+
+            #Parse JSON data from request body
+            data = request.get_json()
+
+            title = data.get('title')
+            description = data.get('description')
+
+            #Create a new tasklist
+            new_task_list = Task_List(
+                title = title,
+                description = description,
+                user_id = current_user_id
+            )
+
+            db.session.add(new_task_list)
+            db.session.commit()
+
+            response_dict = {"message" : "Task list created successfully!"}
+            response = make_response(jsonify(response_dict), 201)
+        
+        except Exception as e:
+            response_dict = {"error" : str(e)}
+            response = make_response(jsonify(response_dict), 500)
+
         return response
 
 

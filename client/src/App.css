@@ -1,42 +1,97 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+@import url('https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
+
+/* Reset some default styles */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Style the header */
+.header {
+  background-color: #007bff;
+  color: white;
   text-align: center;
+  padding: 20px;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+/* Style the container */
+.container {
+  max-width: 900px;
+  margin: 450px;
+  padding: 20px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px; /* Add some space between cards */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
 }
 
 .card {
-  padding: 2em;
+  position: relative;
+  width: 250px;
+  height: 200px; 
+  margin: 10px; /* Adjust the margin as needed */
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+  text-align: center;
+  display: inline-block; /* Change from 'inl' to 'inline-block' */
+  flex-direction: column;
+  /* align-items: center; */
+  background-color: #e1e1e1;
 }
 
-.read-the-docs {
-  color: #888;
+.card h5 {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.card p {
+  font-size: 1rem;
+}
+
+/* Style the "Create Task List" form */
+.form-group {
+  margin-bottom: 10px;
+}
+
+.form-group label {
+  font-weight: bold;
+}
+
+textarea {
+  width: 100%;
+  height: 100px;
+}
+
+/* Style buttons */
+.btn {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: #007bff;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.container h3{
+  text-align: center;
+}
+
+.card:hover .btn-delete,
+.card:hover .btn-update {
+  display: block;
 }
