@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Navbar from "./Navbar";
 
 const Dashboard = () => {
   const [taskLists, setTaskLists] = useState([]);
@@ -8,7 +7,7 @@ const Dashboard = () => {
     title: "",
     description: "",
   });
-  const [showForm, setShowForm] = useState(false); 
+  const [showForm, setShowForm] = useState(false);
   const accessToken = localStorage.getItem("accessToken");
 
   useEffect(() => {
@@ -77,25 +76,40 @@ const Dashboard = () => {
 
   return (
     <div>
-      <Navbar />
-      <div className="container mt-5">
+      <div
+        className="container"
+        style={{ marginTop: "70px", alignContent: "center" }}
+      >
         <h3>Your Task Lists</h3>
         <div className="row">
           {taskLists.length === 0 ? (
             <p>No task lists available.</p>
           ) : (
             taskLists.map((taskList) => (
-              <div key={taskList.id} className="col-md-4 mb-3">
-                <div className="card">
-                  <div className="card-body">
-                    <h5 className="card-title">{taskList.title}</h5>
-                    <p className="card-text">{taskList.description}</p>
-                    <Link
-                      to={`/task_lists/${taskList.id}`}
-                      className="btn btn-primary"
-                    >
-                      View Details
-                    </Link>
+              <div key={taskList.id} className="col-md-4 mb-4">
+                <div className="card-overlay">
+                  <div className="card">
+                    <div className="card-body">
+                      <h5 className="card-title">{taskList.title}</h5>
+                      <p className="card-text">{taskList.description}</p>
+                    </div>
+                  </div>
+                  <div className="overlay">
+                    <div className="text">
+                      <Link
+                        to={`/task_lists/${taskList.id}`}
+                        className="btn btn-primary"
+                      >
+                        View Details
+                      </Link>
+                      <button className="btn btn-danger">Delete</button>
+                      <Link
+                        to={`update-task-list/${taskList.id}`}
+                        className="btn btn-secondary"
+                      >
+                        Update
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -138,8 +152,8 @@ const Dashboard = () => {
             </form>
           </>
         ) : (
-          <button onClick={() => setShowForm(true)} className="btn btn-primary"><i className="fas fa-plus fa-sm"></i>&nbsp;
-            Add Task List
+          <button onClick={() => setShowForm(true)} className="btn btn-primary">
+            <i className="fas fa-plus fa-sm"></i>&nbsp; Add Task List
           </button>
         )}
       </div>

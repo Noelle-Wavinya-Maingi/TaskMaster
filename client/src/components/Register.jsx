@@ -6,6 +6,7 @@ function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [imageUrl, setImageUrl] = useState(""); // Use imageUrl instead of imageFile
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const navigate = useNavigate();
@@ -13,49 +14,60 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check if passwords match
-    if (password !== confirmPassword) {
-      setModalMessage("Passwords do not match. Please try again.");
-      setShowModal(true); // Show the modal with error message
+    if (!username || !email || !password || !confirmPassword || !imageUrl) {
+      setModalMessage("All fields are required.");
+      setShowModal(true);
       return;
     }
 
-    const registrationData = {
-      username,
-      email,
-      password,
-    };
+    // Check if passwords match
+    if (password !== confirmPassword) {
+      setModalMessage("Passwords do not match. Please try again.");
+      setShowModal(true);
+      return;
+    }
+
+    // Create a FormData object to send form data
+    const formData = new FormData();
+    formData.append("username", username);
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("confirmPassword", confirmPassword);
+    formData.append("imageURL", imageUrl); // Use imageURL instead of image_file
 
     try {
-      // Send a POST request to your backend's registration endpoint
+      // Send a POST request to the registration API endpoint
       const response = await fetch("/api/register", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(registrationData),
+        body: formData,
       });
 
       if (response.ok) {
-        setModalMessage("Registration successful!");
-        setShowModal(true); // Show the modal with success message
+        // Registration successful, show success modal
+        setModalMessage("Registration successful! Redirecting to login.");
+        setShowModal(true);
+
+        // Handle success actions here (e.g., redirect to login)
         setTimeout(() => {
           navigate("/login");
-        }, 3000); // Redirect to login after 3 seconds
+        }, 2000); // Redirect after 2 seconds
       } else {
-        setModalMessage("Registration Failed");
-        setShowModal(true); // Show the modal with error message
-        console.error("Registration failed.");
+        // Registration failed, handle errors (e.g., display error message)
+        const responseData = await response.json();
+        setModalMessage(responseData.message);
+        setShowModal(true);
       }
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
+  // JSX for the registration form
   return (
     <div className="container mt-5">
       <h2>Register</h2>
       <form onSubmit={handleSubmit}>
+        {/* Username */}
         <div className="mb-3">
           <label htmlFor="username" className="form-label">
             Username:
@@ -69,12 +81,14 @@ function Register() {
             required
           />
         </div>
+
+        {/* Email */}
         <div className="mb-3">
           <label htmlFor="email" className="form-label">
             Email:
           </label>
           <input
-            type="text"
+            type="email"
             className="form-control"
             id="email"
             value={email}
@@ -82,6 +96,8 @@ function Register() {
             required
           />
         </div>
+
+        {/* Password */}
         <div className="mb-3">
           <label htmlFor="password" className="form-label">
             Password:
@@ -95,6 +111,8 @@ function Register() {
             required
           />
         </div>
+
+        {/* Confirm Password */}
         <div className="mb-3">
           <label htmlFor="confirmPassword" className="form-label">
             Confirm Password:
@@ -108,38 +126,62 @@ function Register() {
             required
           />
         </div>
+
+        {/* Image URL */}
+        <div className="mb-3">
+          <label htmlFor="imageUrl" className="form-label">
+            Profile Image URL:
+          </label>
+          <input
+            type="url"
+            className="form-control"
+            id="imageUrl"
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
+            required
+          />
+        </div>
+
+        {/* Submit Button */}
         <button type="submit" className="btn btn-primary">
-          Register
+          <i class="fa fa-user-plus fa-sm"></i>&nbsp; Register
         </button>
       </form>
-      <p>
-        Already have an account? <Link to="/log_in">Login</Link>
-      </p>
 
-      {/* Bootstrap Modal */}
+      {/* Error/Success Modal */}
       <div
         className={`modal fade ${showModal ? "show" : ""}`}
-        id="registrationModal"
-        tabIndex="-1"
-        aria-labelledby="registrationModalLabel"
-        aria-hidden="true"
         style={{ display: showModal ? "block" : "none" }}
+        tabIndex="-1"
+        role="dialog"
       >
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title" id="registrationModalLabel">
-                Registration Status
+              <h5 className="modal-title">
+                {modalMessage.startsWith("Registration successful")
+                  ? "Success"
+                  : "Error"}
               </h5>
               <button
                 type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-                onClick={() => setShowModal(false)} // Close modal when the close button is clicked
-              ></button>
+                className="close"
+                data-dismiss="modal"
+                onClick={() => setShowModal(false)}
+              >
+                &times;
+              </button>
             </div>
             <div className="modal-body">{modalMessage}</div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => setShowModal(false)}
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       </div>

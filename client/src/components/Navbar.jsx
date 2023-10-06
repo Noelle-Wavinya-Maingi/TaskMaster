@@ -1,11 +1,10 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import "../App.css";
 
 const Navbar = () => {
   return (
     <nav
-      className="navbar navbar-expand-lg navbar-light bg-light"
+      className="navbar navbar-expand-lg navbar-light bg-light fixed-top"
       style={{ marginTop: "20px", marginLeft: "85px" }}
     >
       <div className="container-fluid">
@@ -26,16 +25,20 @@ const Navbar = () => {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ml-auto">
             <li className="nav-item">
-              <NavLink className="nav-link" to="/dashboard"><i className="fas fa-tachometer-alt fa-sm"></i>&nbsp;
-                  Dashboard
+              <NavLink className="nav-link" to="/dashboard">
+                <i className="fas fa-tachometer-alt fa-sm"></i>&nbsp; Dashboard
               </NavLink>
             </li>
             <li className="nav-item">
-              <NavLink className="nav-link" to="/profile"><i className="far fa-address-card fa-sm"></i>&nbsp;
-                Profile
+              <NavLink className="nav-link" to="/profile">
+                <i className="far fa-address-card fa-sm"></i>&nbsp; Profile
               </NavLink>
             </li>
-            {/* Add more navigation links here */}
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/logout">
+                <i class="fas fa-sign-out-alt fa-sm"></i>&nbsp; Logout
+              </NavLink>
+            </li>
           </ul>
         </div>
       </div>

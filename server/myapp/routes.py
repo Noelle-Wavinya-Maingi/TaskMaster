@@ -21,6 +21,7 @@ class UserRegistrationResource(Resource):
             username = data.get("username")
             email = data.get("email")
             password = data.get("password")
+            image_file = data.get("image_file")
 
             if not username or not email or not password:
                 return {"message": "Missing required fields"}, 400
@@ -39,7 +40,7 @@ class UserRegistrationResource(Resource):
             hashed_password = bcrypt.generate_password_hash(password).decode("utf-8")
 
             # Create a new user
-            new_user = User(username=username, email=email, password=hashed_password)
+            new_user = User(username=username, email=email, password=hashed_password, image_file = image_file)
 
             # Add the user to the database
             db.session.add(new_user)
@@ -454,6 +455,23 @@ class TaskById(Resource):
             response = make_response(jsonify(response_dict), 500)
         return response
 
+class Account(Resource):
+    @jwt_required()
+    def get(self):
+        try:
+            current_user_id = get_jwt_identity()
+            user = User.query.filter_by(id=current_user_id).first()
+
+            if not user:
+                return {"message": "User not found"}, 404
+
+            # Serialize the user data using the SerializerMixin
+            user_data = user.to_dict()
+
+            return user_data, 200
+
+        except Exception as e:
+            return {"error": str(e)}, 500
 
                 
 
@@ -464,3 +482,4 @@ api.add_resource(TaskLists, "/tasklist")
 api.add_resource(TaskListByID, "/tasklist/<int:id>")
 api.add_resource(TaskResource, '/tasks')
 api.add_resource(TaskById, '/task/<int:id>')
+api.add_resource(Account, '/account')
