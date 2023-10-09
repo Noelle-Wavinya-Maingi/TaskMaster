@@ -31,7 +31,7 @@ body {
   align-items: center; /* Center vertically */
 }
 
-.card {
+.card-tasks {
   position: relative;
   width: 250px;
   height: 200px; 
@@ -43,7 +43,6 @@ body {
   display: inline-block; /* Change from 'inl' to 'inline-block' */
   flex-direction: column;
   /* align-items: center; */
-  background-color: #e1e1e1;
 }
 
 .card h5 {
@@ -172,4 +171,8 @@ textarea {
 
 .card-overlay .overlay button.btn-secondary {
   background-color: #6c757d;
+}
+
+.container{
+  margin-top: 140px;
 }

@@ -17,14 +17,16 @@ function App() {
       <div className="App">
         <Navbar />
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" exact element={<Home />} />
           <Route path="/log_in" element={<Login />} />
           {/* <Route path="/logout" element={<Logout />} /> */}
           <Route path="/registration" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/update-task-list/:id" element={<UpdateTaskList />} />
-          <Route path="/task_lists/:id" element={<TaskListDetail />} />
+          <Route path="/task_lists/:taskListId" element={<TaskListDetail />} />
+
+
         </Routes>
       </div>
     </BrowserRouter>

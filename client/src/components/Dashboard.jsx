@@ -112,27 +112,31 @@ const Dashboard = () => {
         {showForm ? (
           <>
             <h3>Create a New Task List</h3>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="border p-3 mb-4">
               <div className="form-group">
-                <label>Title:</label>
+                <label htmlFor="title" className="form-label">Title:</label>
                 <input
                   type="text"
                   name="title"
+                  id="title"
+                  className="form-control"
                   value={newTaskList.title}
                   onChange={handleInputChange}
                   required
                 />
               </div>
               <div className="form-group">
-                <label>Description:</label>
+                <label htmlFor="description" className="form-label">Description:</label>
                 <textarea
                   name="description"
+                  id="description"
+                  className="form-control"
                   value={newTaskList.description}
                   onChange={handleInputChange}
                   required
                 ></textarea>
               </div>
-              <button type="submit" className="btn btn-primary">
+              <button type="submit" className="btn btn-primary mr-5">
                 Create Task List
               </button>
               <button
@@ -155,7 +159,7 @@ const Dashboard = () => {
             taskLists.map((taskList) => (
               <div key={taskList.id} className="col-md-4 mb-4">
                 <div className="card-overlay">
-                  <div className="card">
+                  <div className="card-tasks">
                     <div className="card-body">
                       <h5 className="card-title">{taskList.title}</h5>
                       <p className="card-text">{taskList.description}</p>
@@ -171,14 +175,14 @@ const Dashboard = () => {
                         View Details
                       </Link>
                       <Link
-                        className="btn btn-danger button-spacing"
+                        className="btn btn-danger ml-3"
                         onClick={() => handleDeleteTaskList(taskList.id)}
                       >
                         Delete
                       </Link>
                       <Link
                         to={`/update-task-list/${taskList.id}`}
-                        className="btn btn-secondary button-spacing"
+                        className="btn btn-secondary mt-3"
                       >
                         Update
                       </Link>
