@@ -248,7 +248,7 @@ const TaskListDetail = () => {
                         onChange={() =>
                           handleTaskStatusChange(task.id, task.completed)
                         }
-                      />
+                      />&nbsp;&nbsp;
                       <strong>{task.title}</strong>: {task.description}
                     </li>
                   ))}

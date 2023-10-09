@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -120,6 +120,9 @@ function Register() {
           Register
         </button>
       </form>
+      <p className="mt-3">
+        Already have an account? <Link to="/log_in">Sign in here</Link>
+      </p>
     </div>
   );
 }
