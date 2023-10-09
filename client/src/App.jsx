@@ -10,6 +10,7 @@ import Profile from "./components/Profile";
 import Navbar from "./components/Navbar";
 import UpdateTaskList from "./components/UpdateTask";
 import TaskListDetail from "./components/TaskListDetai";
+import UpdateProfile from "./components/UpdateProfile";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/update-task-list/:id" element={<UpdateTaskList />} />
           <Route path="/task_lists/:taskListId" element={<TaskListDetail />} />
+          <Route path="/update-profile" element = {<UpdateProfile />} />
 
 
         </Routes>

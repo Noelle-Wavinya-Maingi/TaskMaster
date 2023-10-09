@@ -1,73 +1,52 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Register() {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [imageUrl, setImageUrl] = useState(""); // Use imageUrl instead of imageFile
-  const [showModal, setShowModal] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
-  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    image_url: '',
+  });
+  const [message, setMessage] = useState('');
+  const navigate = useNavigate()
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!username || !email || !password || !confirmPassword || !imageUrl) {
-      setModalMessage("All fields are required.");
-      setShowModal(true);
-      return;
-    }
+    const response = await fetch('/api/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
 
-    // Check if passwords match
-    if (password !== confirmPassword) {
-      setModalMessage("Passwords do not match. Please try again.");
-      setShowModal(true);
-      return;
-    }
+    const data = await response.json();
 
-    // Create a FormData object to send form data
-    const formData = new FormData();
-    formData.append("username", username);
-    formData.append("email", email);
-    formData.append("password", password);
-    formData.append("confirmPassword", confirmPassword);
-    formData.append("imageURL", imageUrl); // Use imageURL instead of image_file
-
-    try {
-      // Send a POST request to the registration API endpoint
-      const response = await fetch("/api/register", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (response.ok) {
-        // Registration successful, show success modal
-        setModalMessage("Registration successful! Redirecting to login.");
-        setShowModal(true);
-
-        // Handle success actions here (e.g., redirect to login)
-        setTimeout(() => {
-          navigate("/login");
-        }, 2000); // Redirect after 2 seconds
-      } else {
-        // Registration failed, handle errors (e.g., display error message)
-        const responseData = await response.json();
-        setModalMessage(responseData.message);
-        setShowModal(true);
-      }
-    } catch (error) {
-      console.error("Error:", error);
+    if (response.ok) {
+      setMessage(data.message);
+      navigate("/log_in")
+      // Redirect to login page or perform other actions upon successful registration
+    } else {
+      setMessage(data.message);
     }
   };
 
-  // JSX for the registration form
   return (
     <div className="container mt-5">
       <h2>Register</h2>
+      {message && <div className="alert alert-success">{message}</div>}
       <form onSubmit={handleSubmit}>
-        {/* Username */}
         <div className="mb-3">
           <label htmlFor="username" className="form-label">
             Username:
@@ -76,13 +55,12 @@ function Register() {
             type="text"
             className="form-control"
             id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            name="username"
+            value={formData.username}
+            onChange={handleChange}
             required
           />
         </div>
-
-        {/* Email */}
         <div className="mb-3">
           <label htmlFor="email" className="form-label">
             Email:
@@ -91,13 +69,12 @@ function Register() {
             type="email"
             className="form-control"
             id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
             required
           />
         </div>
-
-        {/* Password */}
         <div className="mb-3">
           <label htmlFor="password" className="form-label">
             Password:
@@ -106,13 +83,12 @@ function Register() {
             type="password"
             className="form-control"
             id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
             required
           />
         </div>
-
-        {/* Confirm Password */}
         <div className="mb-3">
           <label htmlFor="confirmPassword" className="form-label">
             Confirm Password:
@@ -121,70 +97,29 @@ function Register() {
             type="password"
             className="form-control"
             id="confirmPassword"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleChange}
             required
           />
         </div>
-
-        {/* Image URL */}
         <div className="mb-3">
-          <label htmlFor="imageUrl" className="form-label">
-            Profile Image URL:
+          <label htmlFor="image_url" className="form-label">
+            Image URL:
           </label>
           <input
             type="url"
             className="form-control"
-            id="imageUrl"
-            value={imageUrl}
-            onChange={(e) => setImageUrl(e.target.value)}
-            required
+            id="image_url"
+            name="image_url"
+            value={formData.image_url}
+            onChange={handleChange}
           />
         </div>
-
-        {/* Submit Button */}
         <button type="submit" className="btn btn-primary">
-          <i className="fa fa-user-plus fa-sm"></i>&nbsp; Register
+          Register
         </button>
       </form>
-
-      {/* Error/Success Modal */}
-      <div
-        className={`modal fade ${showModal ? "show" : ""}`}
-        style={{ display: showModal ? "block" : "none" }}
-        tabIndex="-1"
-        role="dialog"
-      >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title">
-                {modalMessage.startsWith("Registration successful")
-                  ? "Success"
-                  : "Error"}
-              </h5>
-              <button
-                type="button"
-                className="close"
-                data-dismiss="modal"
-                onClick={() => setShowModal(false)}
-              >
-                &times;
-              </button>
-            </div>
-            <div className="modal-body">{modalMessage}</div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={() => setShowModal(false)}
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

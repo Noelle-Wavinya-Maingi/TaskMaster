@@ -9,7 +9,7 @@ class User(db.Model, SerializerMixin):
     username = db.Column(db.String, unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
-    image_file = db.Column(db.String, nullable=False)
+    image_url = db.Column(db.String, nullable=False)
 
     # task_lists = db.relationship("Task_List", backref="user", lazy=True)
 

@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [flashMessage, setFlashMessage] = useState(""); // State for flash message
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -38,6 +39,7 @@ function Login() {
         navigate("/dashboard");
       } else {
         // Handle login error (e.g., show an error message to the user)
+        setFlashMessage(data.message); // Set the flash message
         console.error(data.message);
       }
     } catch (error) {
@@ -48,6 +50,7 @@ function Login() {
   return (
     <div className="container mt-5">
       <h2>Login</h2>
+      {flashMessage && <div className="alert alert-danger">{flashMessage}</div>} {/* Display flash message */}
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlFor="username" className="form-label">
@@ -75,8 +78,8 @@ function Login() {
             required
           />
         </div>
-        <button type="submit" className="btn btn-primary"><i className="fas fa-sign-in-alt fa-sm"></i>&nbsp;
-          Login
+        <button type="submit" className="btn btn-primary">
+          <i className="fas fa-sign-in-alt fa-sm"></i>&nbsp; Login
         </button>
       </form>
       <p className="mt-3">

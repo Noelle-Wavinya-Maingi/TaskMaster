@@ -52,11 +52,11 @@ const Profile = () => {
         {loading ? (
           <p>Loading user profile...</p>
         ) : user ? (
-          <div className="card-profile">
+          <div className="card text-center">
             <img
-              src={user.image_file}
+              src={user.image_url}
               alt={user.username}
-              className="card-img-top rounded-circle" // Apply the circular style
+              className="card-img-top rounded-circle mx-auto" // Apply the circular style and center the image horizontally
               style={{ width: "150px", height: "150px" }} // Set image dimensions
             />
             <div className="card-body">
