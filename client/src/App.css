@@ -1,12 +1,11 @@
-@import url('https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css');
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital@1&display=swap');
-
+@import url("https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital@1&display=swap");
 
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 /* Style the header */
@@ -27,23 +26,24 @@ body {
 .card-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px; /* Add some space between cards */
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
 }
 
 .card-tasks {
   position: relative;
   width: 250px;
-  height: 200px; 
-  margin: 10px; /* Adjust the margin as needed */
+  height: 200px;
+  margin: 10px;
   padding: 20px;
   border-radius: 5px;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+    rgba(0, 0, 0, 0.3) 0px 30px 60px -30px,
+    rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
   text-align: center;
-  display: inline-block; /* Change from 'inl' to 'inline-block' */
+  display: inline-block;
   flex-direction: column;
-  /* align-items: center; */
 }
 
 .card h5 {
@@ -87,22 +87,23 @@ textarea {
   background-color: #0056b3;
 }
 
-.container h3{
+.container h3 {
   text-align: center;
 }
 
 .card-profile {
   position: relative;
   width: 600px;
-  height: 400px; 
-  margin: 10px; /* Adjust the margin as needed */
+  height: 400px;
+  margin: 10px;
   padding: 20px;
   border-radius: 5px;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+    rgba(0, 0, 0, 0.3) 0px 30px 60px -30px,
+    rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
   text-align: center;
-  display: inline-block; /* Change from 'inl' to 'inline-block' */
+  display: inline-block;
   flex-direction: column;
-  /* align-items: center; */
   background-color: #e1e1e1;
 }
 
@@ -110,17 +111,17 @@ textarea {
 
 .home-container {
   position: relative;
-   background-image: url("/static/profile/pexels-karolina-grabowska-4022218.jpg"); /* Replace with your image URL */
-   background-size: cover;       /*Cover the entire container */ 
-   background-repeat: no-repeat; /* Do not repeat the image */
-  background-position: center;  /*Center the image horizontally and vertically */
-  width: 100vw;                /* Set the width to cover the viewport width */
-  height: 100vh;          /* Set a minimum height to cover the viewport */
+  background-image: url("/static/profile/pexels-karolina-grabowska-4022218.jpg"); /* Replace with your image URL */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 100vw;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  text-align: center;/* Text color */
+  text-align: center;
 }
 
 .overlay {
@@ -132,16 +133,18 @@ textarea {
   transform: translate(-50%, -50%);
   -ms-transform: translate(-50%, -50%);
   text-align: center;
-  display: flex; /* Add display property to align items horizontally */
-  align-items: center; /* Center vertically */
-  justify-content: center; /* Center horizontally */
-  width: 100%; /* Set the overlay width to cover the entire card */
-  height: 100%; /* Set the overlay height to cover the entire card */
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background on hover */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .card-overlay:hover {
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.5) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset; /* Adjust the box-shadow on hover */
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+    rgba(0, 0, 0, 0.5) 0px 30px 60px -30px,
+    rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset; /* Adjust the box-shadow on hover */
 }
 
 .card-overlay .overlay {
@@ -149,12 +152,12 @@ textarea {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  opacity: 0; /* Hidden by default */
-  transition: opacity 0.3s ease-in-out; /* Add a transition for opacity */
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
 }
 
 .card-overlay:hover .overlay {
-  opacity: 1; /* Show overlay on hover */
+  opacity: 1;
 }
 
 .card-overlay .overlay button {
@@ -174,18 +177,6 @@ textarea {
   background-color: #6c757d;
 }
 
-.container{
+.container {
   margin-top: 140px;
-}
-
-/* Light Mode Styles */
-body {
-  background-color: #fff;
-  color: #000;
-}
-
-/* Dark Mode Styles */
-.dark-mode {
-  background-color: #111;
-  color: #fff;
 }

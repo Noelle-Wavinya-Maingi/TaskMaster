@@ -5,10 +5,10 @@ const UpdateProfile = () => {
   const [user, setUser] = useState({
     username: "",
     password: "",
-    image_url: "", // Initialize as an empty string
+    image_url: "", 
   });
   const [loading, setLoading] = useState(true);
-  const [flashMessage, setFlashMessage] = useState(""); // State for flash message
+  const [flashMessage, setFlashMessage] = useState(""); 
 
   useEffect(() => {
     // Fetch the user's data from the backend API
@@ -90,7 +90,7 @@ const UpdateProfile = () => {
           <div>
             {flashMessage && (
               <div className="alert alert-danger">{flashMessage}</div>
-            )} {/* Display flash message */}
+            )} 
             <form onSubmit={handleSubmit} className="border p-3 " >
               <div className="form-group">
                 <label htmlFor="username" className="form-label">Username:</label>

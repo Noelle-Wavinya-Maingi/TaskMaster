@@ -98,7 +98,6 @@ const Dashboard = () => {
   };
 
   const handleViewTaskList = (taskListId) => {
-    // Replace 'taskListId' with the actual ID of the task list you want to view
     navigate(`/view-tasklist/${taskListId}`);
   };
 

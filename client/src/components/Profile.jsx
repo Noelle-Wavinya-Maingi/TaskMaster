@@ -42,7 +42,7 @@ const Profile = () => {
   // Function to handle the update button click
   const handleUpdateClick = () => {
     // Redirect or navigate to the update profile page
-    navigate("/update-profile"); // Replace with the actual route
+    navigate("/update-profile"); 
   };
 
   return (
@@ -56,8 +56,8 @@ const Profile = () => {
             <img
               src={user.image_url}
               alt={user.username}
-              className="card-img-top rounded-circle mx-auto" // Apply the circular style and center the image horizontally
-              style={{ width: "150px", height: "150px" }} // Set image dimensions
+              className="card-img-top rounded-circle mx-auto"
+              style={{ width: "150px", height: "150px" }} 
             />
             <div className="card-body">
               <h5 className="card-title">{user.username}</h5>

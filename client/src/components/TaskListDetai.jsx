@@ -12,7 +12,7 @@ const TaskListDetail = () => {
 
   const [taskLists, setTaskLists] = useState([]);
   const [tasks, setTasks] = useState([]);
-  const [accessToken, setAccessToken] = useState(""); // Initialize with an empty string
+  const [accessToken, setAccessToken] = useState(""); 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showForm, setShowForm] = useState(false);
@@ -42,7 +42,7 @@ const TaskListDetail = () => {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`, // Include the access token
+          Authorization: `Bearer ${accessToken}`, 
         },
         body: JSON.stringify({
           completed: !completed,
@@ -81,11 +81,11 @@ const TaskListDetail = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`, // Include the access token
+          Authorization: `Bearer ${accessToken}`, 
         },
         body: JSON.stringify({
           ...newTask,
-          task_list_name: selectedTaskList.title, // Assuming you want to associate the task with the current task list
+          task_list_name: selectedTaskList.title,
           due_date: formattedDate,
         }),
       });
@@ -141,7 +141,7 @@ const TaskListDetail = () => {
         const tasksResponse = await fetch("/api/tasks", {
           method: "GET",
           headers: {
-            Authorization: `Bearer ${accessToken}`, // Include the access token
+            Authorization: `Bearer ${accessToken}`, 
           },
         });
 

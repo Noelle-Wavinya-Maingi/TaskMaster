@@ -3,12 +3,11 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const UpdateTaskList = () => {
   const { id } = useParams();
-  const [taskList, setTaskList] = useState(null); // Initialize as null
+  const [taskList, setTaskList] = useState(null); 
   const navigate = useNavigate();
 
   useEffect(() => {
     // Fetch the task list data that you want to update based on the 'id'
-    // For example, you can make an API request to get the task list data
     const fetchData = async () => {
       try {
         // Get the access token from localStorage
@@ -37,7 +36,7 @@ const UpdateTaskList = () => {
         console.log("Fetched task list data:", taskListData);
 
         // Populate the form fields with the task list data
-        setTaskList(taskListData.task_list); // Use the actual task_list data
+        setTaskList(taskListData.task_list); 
       } catch (error) {
         // Handle errors if the fetch fails
         console.error("Error fetching task list:", error);
@@ -76,12 +75,12 @@ const UpdateTaskList = () => {
         // Add other fields as needed
       };
 
-      // Make a PUT or PATCH request to your API to update the task list
+      // Make a PATCH request to your API to update the task list
       const response = await fetch(`/api/tasklist/${id}`, {
         method: "PATCH", // or "PATCH" depending on your API
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${storedAccessToken}`, // Include the access token
+          Authorization: `Bearer ${storedAccessToken}`, 
         },
         body: JSON.stringify(updatedTaskList),
       });
@@ -90,9 +89,6 @@ const UpdateTaskList = () => {
         // Handle the case where the API request fails
         throw new Error(`Failed to update task list. Status: ${response.status}`);
       }
-
-      // Assuming the update was successful, you can navigate to a different route
-      // For example, navigate to the dashboard or any other route
       navigate("/dashboard");
     } catch (error) {
       // Handle errors if the update fails

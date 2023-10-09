@@ -50,7 +50,7 @@ function Login() {
   return (
     <div className="container mt-5">
       <h2>Login</h2>
-      {flashMessage && <div className="alert alert-danger">{flashMessage}</div>} {/* Display flash message */}
+      {flashMessage && <div className="alert alert-danger">{flashMessage}</div>}
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlFor="username" className="form-label">

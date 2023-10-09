@@ -8,7 +8,6 @@ const Navbar = () => {
   const location = useLocation();
   const [showConfirmation, setShowConfirmation] = useState(false);
 
-
   const handleLogout = () => {
     // Display the confirmation dialog
     setShowConfirmation(true);
@@ -30,16 +29,20 @@ const Navbar = () => {
     setShowConfirmation(false);
   };
 
-  if (location.pathname === "/" || location.pathname === "/registration" || location.pathname === "/log_in") {
+  if (
+    location.pathname === "/" ||
+    location.pathname === "/registration" ||
+    location.pathname === "/log_in"
+  ) {
     return null;
   }
 
   return (
-    <div className= "navbar" >
-       <nav
-      className="navbar navbar-expand-lg navbar-light bg-light fixed-top"
-      style={{ marginTop: "20px", marginLeft: "85px" }}
-    >
+    <div className="navbar">
+      <nav
+        className="navbar navbar-expand-lg navbar-light bg-light fixed-top"
+        style={{ marginTop: "20px", marginLeft: "85px" }}
+      >
         <div className="container-fluid">
           <NavLink className="navbar-brand" to="/dashboard">
             TaskMaster
@@ -59,7 +62,8 @@ const Navbar = () => {
             <ul className="navbar-nav ml-auto">
               <li className="nav-item">
                 <NavLink className="nav-link" to="/dashboard">
-                  <i className="fas fa-tachometer-alt fa-sm"></i>&nbsp; Dashboard
+                  <i className="fas fa-tachometer-alt fa-sm"></i>&nbsp;
+                  Dashboard
                 </NavLink>
               </li>
               <li className="nav-item">
@@ -73,7 +77,7 @@ const Navbar = () => {
                 </NavLink>
               </li>
             </ul>
-                      </div>
+          </div>
         </div>
       </nav>
     </div>
