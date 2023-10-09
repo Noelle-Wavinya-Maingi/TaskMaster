@@ -6,9 +6,10 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import Dashboard from "./components/Dashboard";
 import Profile from "./components/Profile";
-import Logout from "./components/Logout";
+// import Logout from "./components/Logout";
 import Navbar from "./components/Navbar";
 import UpdateTaskList from "./components/UpdateTask";
+import TaskListDetail from "./components/TaskListDetai";
 
 function App() {
   return (
@@ -16,14 +17,14 @@ function App() {
       <div className="App">
         <Navbar />
         <Routes>
-          <Route path="/" exact Component={Home} />
+          <Route path="/" element={<Home />} />
           <Route path="/log_in" element={<Login />} />
-          <Route path="/logout" element={<Logout />} />
+          {/* <Route path="/logout" element={<Logout />} /> */}
           <Route path="/registration" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="dashboard/update-task-list/:id" element={<UpdateTaskList />} />
-
+          <Route path="/update-task-list/:id" element={<UpdateTaskList />} />
+          <Route path="/task_lists/:id" element={<TaskListDetail />} />
         </Routes>
       </div>
     </BrowserRouter>

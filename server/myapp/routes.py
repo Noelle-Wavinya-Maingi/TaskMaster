@@ -409,18 +409,19 @@ class TaskById(Resource):
             if not task_list or task_list.user_id != current_user_id:
                 return {"message": "Task does not belong to the current user"}, 403
 
-            # Parse JSON data from the request body
+            # Parse JSON data from the request body (if any)
             data = request.get_json()
-            title = data.get("title")
-            description = data.get("description")
 
-            # Update the task attributes
-            if title:
-                task.title = title
-            if description:
-                task.description = description
+            # Update the task's completion status
+            if "completed" in data:
+                completed = data["completed"]
+            if completed not in [True, False]:
+                return {"message": "Invalid value for 'completed' field"}, 422
 
-            # Commit the changes to the database
+            # Update the task's completion status
+            task.completed = completed
+
+        # Commit the changes to the database
             db.session.commit()
 
             # Serialize and return the updated Task data
@@ -440,8 +441,7 @@ class TaskById(Resource):
             response_dict = {"errors": ["An error occurred: " + str(e)]}
             response = make_response(jsonify(response_dict), 500)
         return response
-
-
+    
     @jwt_required()
     def delete(self, id):
         try:

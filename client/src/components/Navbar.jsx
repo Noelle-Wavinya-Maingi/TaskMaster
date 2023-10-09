@@ -1,7 +1,31 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
+import React, { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+  const navigate = useNavigate();
+  const [showConfirmation, setShowConfirmation] = useState(false);
+
+  const handleLogout = () => {
+    // Display the confirmation dialog
+    setShowConfirmation(true);
+  };
+
+  const confirmLogout = () => {
+    // Clear user session data (e.g., remove JWT token from local storage)
+    localStorage.removeItem("accessToken");
+
+    // Close the confirmation dialog
+    setShowConfirmation(false);
+
+    // Navigate to the login page ("/log_in" route)
+    navigate("/log_in");
+  };
+
+  const cancelLogout = () => {
+    // Hide the confirmation dialog
+    setShowConfirmation(false);
+  };
+
   return (
     <nav
       className="navbar navbar-expand-lg navbar-light bg-light fixed-top"
@@ -35,13 +59,38 @@ const Navbar = () => {
               </NavLink>
             </li>
             <li className="nav-item">
-              <NavLink className="nav-link" to="/logout">
-                <i className="fas fa-sign-out-alt fa-sm"></i>&nbsp; Logout
+              <NavLink
+                onClick={handleLogout}
+                className="nav-link"
+              >
+                Logout
               </NavLink>
             </li>
           </ul>
         </div>
       </div>
+
+      {/* Logout confirmation dialog */}
+      {showConfirmation && (
+        <div className="custom-confirmation-dialog">
+          <p>Are you sure you want to log out?</p>
+          <button
+            type="button"
+            className="btn btn-danger"
+            onClick={confirmLogout}
+          >
+            Logout
+          </button>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={cancelLogout}
+          >
+            Cancel
+          </button>
+        </div>
+      )}
+
     </nav>
   );
 };

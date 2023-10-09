@@ -74,6 +74,34 @@ const Dashboard = () => {
     }
   };
 
+  const handleDeleteTaskList = async (taskListId) => {
+    try {
+      // Send a DELETE request to delete the task list by ID
+      const response = await fetch(`/api/tasklist/${taskListId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      // Remove the deleted task list from the state
+      setTaskLists((prevTaskLists) =>
+        prevTaskLists.filter((taskList) => taskList.id !== taskListId)
+      );
+    } catch (error) {
+      console.error("Error deleting task list:", error);
+    }
+  };
+
+  const handleViewTaskList = (taskListId) => {
+    // Replace 'taskListId' with the actual ID of the task list you want to view
+    navigate(`/view-tasklist/${taskListId}`);
+  };
+
   return (
     <div>
       <div
@@ -81,42 +109,6 @@ const Dashboard = () => {
         style={{ marginTop: "70px", alignContent: "center" }}
       >
         <h3>Your Task Lists</h3>
-        <div className="row">
-          {taskLists.length === 0 ? (
-            <p>No task lists available.</p>
-          ) : (
-            taskLists.map((taskList) => (
-              <div key={taskList.id} className="col-md-4 mb-4">
-                <div className="card-overlay">
-                  <div className="card">
-                    <div className="card-body">
-                      <h5 className="card-title">{taskList.title}</h5>
-                      <p className="card-text">{taskList.description}</p>
-                    </div>
-                  </div>
-                  <div className="overlay">
-                    <div className="text">
-                      <Link
-                        to={`/task_lists/${taskList.id}`}
-                        className="btn btn-primary"
-                      >
-                        View Details
-                      </Link>
-                      <button className="btn btn-danger">Delete</button>
-                      <Link
-                        to={`update-task-list/${taskList.id}`}
-                        className="btn btn-secondary"
-                      >
-                        Update
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-
         {showForm ? (
           <>
             <h3>Create a New Task List</h3>
@@ -156,6 +148,49 @@ const Dashboard = () => {
             <i className="fas fa-plus fa-sm"></i>&nbsp; Add Task List
           </button>
         )}
+        <div className="row">
+          {taskLists.length === 0 ? (
+            <p>No task lists available.</p>
+          ) : (
+            taskLists.map((taskList) => (
+              <div key={taskList.id} className="col-md-4 mb-4">
+                <div className="card-overlay">
+                  <div className="card">
+                    <div className="card-body">
+                      <h5 className="card-title">{taskList.title}</h5>
+                      <p className="card-text">{taskList.description}</p>
+                    </div>
+                  </div>
+                  <div className="overlay">
+                    <div className="text">
+                      <Link
+                        to={`/task_lists/${taskList.id}`}
+                        onClick={() => handleViewTaskList(taskListId)}
+                        className="btn btn-primary button-spacing"
+                      >
+                        View Details
+                      </Link>
+                      <Link
+                        className="btn btn-danger button-spacing"
+                        onClick={() => handleDeleteTaskList(taskList.id)}
+                      >
+                        Delete
+                      </Link>
+                      <Link
+                        to={`/update-task-list/${taskList.id}`}
+                        className="btn btn-secondary button-spacing"
+                      >
+                        Update
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        
       </div>
     </div>
   );
