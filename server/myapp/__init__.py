@@ -1,3 +1,4 @@
+import os
 from datetime import timedelta
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
@@ -13,7 +14,7 @@ api = Api(app)
 
 app.config["SECRET_KEY"] = '33f334a749dd2e8216f245b0bb263aea'
 app.config['JWT_SECRET_KEY'] = 'b99ce1e67619ed6f9dd29211ec08e559'
-app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///app.db"
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URI")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days = 30)
 app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(minutes = 15)

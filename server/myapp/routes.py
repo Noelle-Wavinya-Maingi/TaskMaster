@@ -2,7 +2,7 @@
 from datetime import datetime
 from myapp import api, db, bcrypt
 from flask import request, jsonify, make_response
-from myapp.models import User, Task_List, Task
+from myapp.models import User, Task_List, Task, Label, TaskLabel
 from flask_restful import Resource
 from flask_jwt_extended import (
     create_access_token,
@@ -546,6 +546,122 @@ class Account(Resource):
 
         except Exception as e:
             return {"error": str(e)}, 500
+        
+class Labels(Resource):
+    @jwt_required()
+    def get(self):
+        try:
+            # Query the database for all labels
+            labels = Label.query.all()
+
+            # Serialize the label data
+            labels_data = []
+
+            for label in labels:
+                label_data = {
+                    "id": label.id,
+                    "name": label.name,
+                    # Add other fields as needed
+                }
+                labels_data.append(label_data)
+
+            response_dict = {
+                "message": "Labels retrieved successfully",
+                "labels": labels_data,
+            }
+
+            response = make_response(jsonify(response_dict), 200)
+        except Exception as e:
+            response_dict = {"errors": str(e)}
+            response = make_response(jsonify(response_dict), 500)
+        return response
+    
+    # @jwt_required()
+    # def post(self):
+    #     try:
+    #         # Get the current user's identity from the JWT
+    #         current_user_id = get_jwt_identity()
+
+    #         # Get the JSON data from the request
+    #         data = request.get_json()
+
+    #         # Check if the 'name' field is present in the JSON data
+    #         if 'name' not in data:
+    #             raise ValueError("Name field is required")
+
+    #         # Create a new label
+    #         new_label = Label(name=data['name'])
+
+    #         # Add the label to the database
+    #         db.session.add(new_label)
+    #         db.session.commit()
+
+    #         response_dict = {
+    #             "message": "Label created successfully",
+    #             "label": {
+    #                 "id": new_label.id,
+    #                 "name": new_label.name,
+    #                 # Add other fields as needed
+    #             },
+    #         }
+
+    #         response = make_response(jsonify(response_dict), 201)
+    #     except Exception as e:
+    #         response_dict = {"errors": str(e)}
+    #         response = make_response(jsonify(response_dict), 500)
+    #     return response
+    
+class TaskLabelResource(Resource):
+    @jwt_required()
+    def post(self):
+        try:
+            current_user_id = get_jwt_identity()
+            
+            # Get task_id and label_id from the request data
+            data = request.get_json()
+            task_id = data.get("task_id")
+            label_id = data.get("label_id")
+            
+            if task_id is None or label_id is None:
+                return {"message": "task_id and label_id are required"}, 400
+            
+            # Check if the task and label exist
+            task = Task.query.filter_by(id=task_id).first()
+            label = Label.query.filter_by(id=label_id).first()
+            
+            if task is None or label is None:
+                return {"message": "Task or label not found"}, 404
+            
+            # Check if the association already exists
+            existing_task_label = TaskLabel.query.filter_by(task_id=task_id, label_id=label_id).first()
+            
+            if existing_task_label:
+                return {"message": "TaskLabel association already exists"}, 400
+            
+            # Create a new TaskLabel association
+            new_task_label = TaskLabel(task_id=task_id, label_id=label_id)
+            
+            db.session.add(new_task_label)
+            db.session.commit()
+            
+            return {"message": "TaskLabel created successfully"}, 201
+        except Exception as e:
+            return {"errors": str(e)}, 500
+        
+    @jwt_required()
+    def get(self):
+        try:
+            current_user_id = get_jwt_identity()
+            
+            # Fetch all data from the TaskLabel table
+            task_labels = TaskLabel.query.all()
+            
+            # You can further serialize the data as needed before returning it
+            task_labels_data = [{"task_id": tl.task_id, "label_id": tl.label_id} for tl in task_labels]
+            
+            return {"task_labels": task_labels_data}, 200
+        except Exception as e:
+            return {"errors": str(e)}, 500
 
 
 # Specify the routes and resources
@@ -556,3 +672,5 @@ api.add_resource(TaskListByID, "/tasklist/<int:id>")
 api.add_resource(TaskResource, "/tasks")
 api.add_resource(TaskById, "/task/<int:id>")
 api.add_resource(Account, "/account")
+api.add_resource(Labels, '/labels')
+api.add_resource(TaskLabelResource, '/tasklabels')
