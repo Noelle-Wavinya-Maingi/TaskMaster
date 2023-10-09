@@ -13,7 +13,7 @@ from flask_jwt_extended import (
 
 @app.route("/")
 def home():
-    return  render_template("index.html")
+    return render_template("index.html")
 
 # Define a resource for user registration
 class UserRegistrationResource(Resource):
