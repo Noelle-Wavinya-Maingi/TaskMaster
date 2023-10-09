@@ -1,7 +1,7 @@
 # Import necessary modules
 from datetime import datetime
-from myapp import api, db, bcrypt
-from flask import request, jsonify, make_response
+from myapp import api, db, bcrypt, app
+from flask import request, jsonify, make_response, render_template
 from myapp.models import User, Task_List, Task, Label, TaskLabel
 from flask_restful import Resource
 from flask_jwt_extended import (
@@ -11,6 +11,9 @@ from flask_jwt_extended import (
     jwt_required,
 )
 
+@app.route("/")
+def home():
+    return  render_template("index.html")
 
 # Define a resource for user registration
 class UserRegistrationResource(Resource):

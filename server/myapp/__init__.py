@@ -8,7 +8,7 @@ from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../../client/dist', static_url_path='', template_folder='../../client/dist')
 api = Api(app)
 
 
