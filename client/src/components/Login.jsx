@@ -18,7 +18,7 @@ function Login() {
 
     try {
       // Send a POST request to your backend's login endpoint
-      const response = await fetch("/api/login", {
+      const response = await fetch("/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
