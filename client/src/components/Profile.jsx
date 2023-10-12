@@ -12,7 +12,7 @@ const Profile = () => {
     // Check if the token exists
     if (accessToken) {
       // Make an API request to fetch user data using the token
-      fetch("/api/account", {
+      fetch("/account", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${accessToken}`,

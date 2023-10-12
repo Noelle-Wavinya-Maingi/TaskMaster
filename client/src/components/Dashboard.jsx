@@ -14,7 +14,7 @@ const Dashboard = () => {
     // Fetch user's task lists from the backend API
     const fetchData = async () => {
       try {
-        const response = await fetch("/api/tasklist", {
+        const response = await fetch("/tasklist", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -46,7 +46,7 @@ const Dashboard = () => {
 
     try {
       // Send a POST request to create a new task list
-      const response = await fetch("/api/tasklist", {
+      const response = await fetch("/tasklist", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -77,7 +77,7 @@ const Dashboard = () => {
   const handleDeleteTaskList = async (taskListId) => {
     try {
       // Send a DELETE request to delete the task list by ID
-      const response = await fetch(`/api/tasklist/${taskListId}`, {
+      const response = await fetch(`/tasklist/${taskListId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -98,7 +98,7 @@ const Dashboard = () => {
   };
 
   const handleViewTaskList = (taskListId) => {
-    navigate(`/view-tasklist/${taskListId}`);
+    navigate(`/view-task-list/${taskListId}`);
   };
 
   return (
@@ -167,8 +167,8 @@ const Dashboard = () => {
                   <div className="overlay">
                     <div className="text">
                       <Link
-                        to={`/task_lists/${taskList.id}`}
-                        onClick={() => handleViewTaskList(taskListId)}
+                        to={`/view-task-list/${taskList.id}`}
+                        onClick={() => handleViewTaskList(taskList.id)}
                         className="btn btn-primary button-spacing"
                       >
                         View Details

@@ -25,7 +25,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/update-task-list/:id" element={<UpdateTaskList />} />
-          <Route path="/task_lists/:taskListId" element={<TaskListDetail />} />
+          <Route path="/view-task-list/:id" element={<TaskListDetail />} />
           <Route path="/update-profile" element = {<UpdateProfile />} />
         </Routes>
       </div>

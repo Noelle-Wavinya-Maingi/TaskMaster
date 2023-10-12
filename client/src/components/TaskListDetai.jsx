@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 const TaskListDetail = () => {
-  const { id } = useParams();
+  const { taskListId } = useParams();
   const [newTask, setNewTask] = useState({
     title: "",
     description: "",
@@ -40,7 +40,7 @@ const TaskListDetail = () => {
         return;
       }
 
-      const response = await fetch(`/api/task/${taskId}`, {
+      const response = await fetch(`/task/${taskId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -79,7 +79,7 @@ const TaskListDetail = () => {
         return;
       }
 
-      const response = await fetch("/api/tasks", {
+      const response = await fetch("/tasks", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -103,7 +103,7 @@ const TaskListDetail = () => {
       // Update: Store labels in TaskLabel association table
       if (newTask.labels.length > 0) {
         for (const labelId of newTask.labels) {
-          const taskLabelResponse = await fetch("/api/tasklabels", {
+          const taskLabelResponse = await fetch("/tasklabels", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -146,7 +146,7 @@ const TaskListDetail = () => {
         }
 
         // Fetch task lists
-        const taskListsResponse = await fetch("/api/tasklist", {
+        const taskListsResponse = await fetch("/tasklist/${taskListId}", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -163,7 +163,7 @@ const TaskListDetail = () => {
         setTaskLists(receivedTaskLists);
 
         // Fetch tasks
-        const tasksResponse = await fetch("/api/tasks", {
+        const tasksResponse = await fetch("/tasks", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -179,7 +179,7 @@ const TaskListDetail = () => {
         setTasks(receivedTasks);
 
              // Fetch labels
-      const response = await fetch("/api/labels", {
+      const response = await fetch("/labels", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -204,7 +204,7 @@ const TaskListDetail = () => {
 
     // Fetch both tasks and task lists here...
     fetchData();
-  }, [accessToken]);
+  }, [accessToken, taskListId]);
 
   const handleLabelSelection = (e) => {
     const { value } = e.target;

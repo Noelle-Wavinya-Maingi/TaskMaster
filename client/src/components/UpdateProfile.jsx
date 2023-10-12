@@ -15,7 +15,7 @@ const UpdateProfile = () => {
     const fetchUserData = async () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
-        const response = await fetch("/api/account", {
+        const response = await fetch("/account", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -54,7 +54,7 @@ const UpdateProfile = () => {
     try {
       // Make a PATCH request to update the user's profile
       const accessToken = localStorage.getItem("accessToken");
-      const response = await fetch("/api/account", {
+      const response = await fetch("/account", {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${accessToken}`,

@@ -19,7 +19,7 @@ const UpdateTaskList = () => {
           return;
         }
 
-        const response = await fetch(`/api/tasklist/${id}`, {
+        const response = await fetch(`/tasklist/${id}`, {
           method: "GET",
           // Include the access token in the headers
           headers: {
@@ -76,7 +76,7 @@ const UpdateTaskList = () => {
       };
 
       // Make a PATCH request to your API to update the task list
-      const response = await fetch(`/api/tasklist/${id}`, {
+      const response = await fetch(`/tasklist/${id}`, {
         method: "PATCH", // or "PATCH" depending on your API
         headers: {
           "Content-Type": "application/json",

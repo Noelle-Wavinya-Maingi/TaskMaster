@@ -6,10 +6,12 @@ from flask_migrate import Migrate
 from flask_restful import Api
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
+from flask_cors import CORS
 
 
 app = Flask(__name__, static_folder='../../client/dist', static_url_path='', template_folder='../../client/dist')
 api = Api(app)
+CORS(app, origins="http://localhost:5173")
 
 
 app.config["SECRET_KEY"] = '33f334a749dd2e8216f245b0bb263aea'
