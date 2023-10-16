@@ -537,8 +537,8 @@ class Account(Resource):
                 )
                 user.password = hashed_password  # Store the hashed password
 
-            if "image_file" in data:
-                user.image_file = data["image_file"]
+            if "image_url" in data:
+                user.image_url = data["image_url"]
             if "username" in data:
                 user.username = data["username"]
 

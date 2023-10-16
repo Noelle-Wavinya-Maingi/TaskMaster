@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 const TaskListDetail = () => {
-  const { taskListId } = useParams();
+  const { id } = useParams();
   const [newTask, setNewTask] = useState({
     title: "",
     description: "",
@@ -19,11 +19,79 @@ const TaskListDetail = () => {
   const [showForm, setShowForm] = useState(false);
   const [labels, setLabels] = useState([]);
 
-  // Function to retrieve the access token from local storage
-  const getAccessTokenFromLocalStorage = () => {
+  useEffect(() => {
+    // Get the access token stored in the local storage
     const storedAccessToken = localStorage.getItem("accessToken");
-    setAccessToken(storedAccessToken || ""); // Set it to an empty string if not found
-  };
+    console.log(storedAccessToken);
+    console.log("Access Token:", accessToken);
+    if (storedAccessToken) {
+      setAccessToken(`Bearer ${storedAccessToken}`);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (accessToken) {
+      // Fetch the individual task list and its tasks by ID from the backend API
+      const fetchData = async () => {
+        try {
+          const taskListResponse = await fetch(`/tasklist/${id}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: accessToken,
+            },
+          });
+
+          if (!taskListResponse.ok) {
+            throw new Error(`HTTP error! Status: ${taskListResponse.status}`);
+          }
+
+          const taskListData = await taskListResponse.json();
+          console.log(taskListData);
+          setTaskLists(taskListData);
+
+          const tasksResponse = await fetch(`/tasks`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: accessToken,
+            },
+          });
+
+          if (!tasksResponse.ok) {
+            throw Error(`HTTP error! Status: ${tasksResponse.status}`);
+          }
+
+          const tasksData = await tasksResponse.json();
+          console.log(tasksData);
+          setTasks(tasksData.tasks || []);
+
+          const labelsResponse = await fetch(`/labels`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: accessToken,
+            },
+          });
+
+          if (!labelsResponse.ok) {
+            throw new Error(`HTTP error! Status: ${labelsResponse.status}`);
+          }
+
+          const labelsData = await labelsResponse.json();
+          console.log("Labels response:", labelsData);
+          setLabels(labelsData);
+
+          setIsLoading(false);
+        } catch (error) {
+          setError(error.message || "An error occurred");
+        }
+      };
+
+      // Call the fetchData function
+      fetchData();
+    }
+  }, [accessToken, id]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -44,7 +112,7 @@ const TaskListDetail = () => {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: accessToken,
         },
         body: JSON.stringify({
           completed: !completed,
@@ -83,7 +151,7 @@ const TaskListDetail = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: accessToken,
         },
         body: JSON.stringify({
           ...newTask,
@@ -107,7 +175,7 @@ const TaskListDetail = () => {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${accessToken}`,
+              Authorization: accessToken,
             },
             body: JSON.stringify({
               task_id: createdTask.id,
@@ -116,7 +184,10 @@ const TaskListDetail = () => {
           });
 
           if (!taskLabelResponse.ok) {
-            // Handle the error if needed
+            const errorResponse = await taskLabelResponse.json();
+            setError(errorResponse.message || "An error occurred");
+
+            console.error("Error adding labels to the task:", errorResponse);
           }
         }
       }
@@ -137,82 +208,13 @@ const TaskListDetail = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (!accessToken) {
-          setIsLoading(false);
-          return;
-        }
-
-        // Fetch task lists
-        const taskListsResponse = await fetch("/tasklist/${taskListId}", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        if (!taskListsResponse.ok) {
-          throw new Error(`HTTP error! Status: ${taskListsResponse.status}`);
-        }
-
-        const taskListsData = await taskListsResponse.json();
-        console.log(taskListsData);
-        const receivedTaskLists = taskListsData.task_lists || [];
-        console.log(receivedTaskLists);
-        setTaskLists(receivedTaskLists);
-
-        // Fetch tasks
-        const tasksResponse = await fetch("/tasks", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-
-        if (!tasksResponse.ok) {
-          throw new Error(`HTTP error! Status: ${tasksResponse.status}`);
-        }
-
-        const tasksData = await tasksResponse.json();
-        const receivedTasks = tasksData.tasks || [];
-        setTasks(receivedTasks);
-
-             // Fetch labels
-      const response = await fetch("/labels", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const labelsData = await response.json();
-      console.log(labelsData);
-      setLabels(labelsData.labels || []);
-    } catch (error) {
-      setError(error.message || "An error occurred");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-    // Call the function to retrieve the access token from local storage
-    getAccessTokenFromLocalStorage();
-
-    // Fetch both tasks and task lists here...
-    fetchData();
-  }, [accessToken, taskListId]);
-
   const handleLabelSelection = (e) => {
     const { value } = e.target;
     // Check if the label is already selected, if so, remove it; otherwise, add it
     setNewTask((prevTask) => ({
       ...prevTask,
       labels: prevTask.labels.includes(value)
-        ? prevTask.labels.filter((label) => label !== value)
+        ? prevTask.labels.filter((labelId) => labelId !== value)
         : [...prevTask.labels, value],
     }));
   };
@@ -223,87 +225,97 @@ const TaskListDetail = () => {
         <p>Loading...</p>
       ) : (
         <div className="container">
-          <h3>Tasks</h3>
+          <h3 className="task-title">Tasks</h3>
           {error ? (
-            <p>Error: {error}</p>
+            <p className="error-message">Error: {error}</p>
           ) : (
             <>
               <div>
-                <button onClick={() => setShowForm(!showForm)} className="form-button">Add Task</button>
+                <button
+                  onClick={() => setShowForm(!showForm)}
+                  className="form-button"
+                >
+                  Add Task
+                </button>
                 {showForm && (
                   <form className="border p-3 mb-3 mt-3">
-                  <h4>Add a New Task</h4>
-                  <div className="mb-3">
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="title"
-                      placeholder="Title"
-                      value={newTask.title}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                  <div className="mb-3">
-                    <textarea
-                      className="form-control"
-                      name="description"
-                      placeholder="Description"
-                      value={newTask.description}
-                      onChange={handleInputChange}
-                    ></textarea>
-                  </div>
-                  <div className="mb-3">
-                    <input
-                      type="datetime-local"
-                      className="form-control"
-                      name="due_date"
-                      placeholder="Due Date"
-                      value={newTask.due_date}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="task_list_name">Task List:</label>
-                    <select
-                      className="form-select"
-                      name="task_list_name"
-                      id="task_list_name"
-                      value={newTask.task_list_name}
-                      onChange={handleInputChange}
+                    <h4>Add a New Task</h4>
+                    <div className="mb-3">
+                      <input
+                        type="text"
+                        className="form-control"
+                        name="title"
+                        placeholder="Title"
+                        value={newTask.title}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <textarea
+                        className="form-control"
+                        name="description"
+                        placeholder="Description"
+                        value={newTask.description}
+                        onChange={handleInputChange}
+                      ></textarea>
+                    </div>
+                    <div className="mb-3">
+                      <input
+                        type="datetime-local"
+                        className="form-control"
+                        name="due_date"
+                        placeholder="Due Date"
+                        value={newTask.due_date}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="task_list_name">Task List:</label>
+                      <select
+                        className="form-select"
+                        name="task_list_name"
+                        id="task_list_name"
+                        value={newTask.task_list_name}
+                        onChange={handleInputChange}
+                      >
+                        <option value="">Select a Task List</option>
+                        {taskLists.map((taskList) => (
+                          <option key={taskList.id} value={taskList.title}>
+                            {taskList.title}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="labels">Labels:</label>
+                      <select
+                        className="form-select"
+                        name="labels"
+                        id="labels"
+                        multiple
+                        value={newTask.labels}
+                        onChange={handleLabelSelection}
+                      >
+                        {Array.isArray(labels.labels) ? (
+  labels.labels.map((label) => (
+    <option key={label.id} value={label.id}>
+      {label.name}
+    </option>
+  ))
+) : (
+  <option value="">Loading labels...</option>
+)}
+
+                      </select>
+                    </div>
+                    <button
+                      type="button"
+                      className="btn btn-success"
+                      onClick={handleAddTask}
                     >
-                      <option value="">Select a Task List</option>
-                      {taskLists.map((taskList) => (
-                        <option key={taskList.id} value={taskList.title}>
-                          {taskList.title}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="labels">Labels:</label>
-                    <select
-                      className="form-select"
-                      name="labels"
-                      id="labels"
-                      multiple
-                      value={newTask.labels}
-                      onChange={handleLabelSelection}
-                    >
-                      {labels.map((label) => (
-                        <option key={label.id} value={label.id}>
-                          {label.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <button
-                    type="button"
-                    className="btn btn-success"
-                    onClick={handleAddTask}
-                  >
-                    Add Task
-                  </button>
-                </form>
+                      Add Task
+                    </button>
+                  </form>
                 )}
               </div>
               {tasks.length > 0 ? (
@@ -316,13 +328,14 @@ const TaskListDetail = () => {
                         onChange={() =>
                           handleTaskStatusChange(task.id, task.completed)
                         }
-                      />&nbsp;&nbsp;
+                      />
+                      &nbsp;&nbsp;
                       <strong>{task.title}</strong>: {task.description}
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p>No tasks yet.</p>
+                <p className="no-tasks-message">No tasks yet.</p>
               )}
             </>
           )}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const [taskLists, setTaskLists] = useState([]);
@@ -9,6 +9,7 @@ const Dashboard = () => {
   });
   const [showForm, setShowForm] = useState(false);
   const accessToken = localStorage.getItem("accessToken");
+  const navigate = useNavigate()
 
   useEffect(() => {
     // Fetch user's task lists from the backend API

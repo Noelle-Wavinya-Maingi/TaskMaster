@@ -180,3 +180,21 @@ textarea {
 .container {
   margin-top: 140px;
 }
+
+/* Apply styles for the "Tasks" title */
+.task-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+/* Apply styles for error messages */
+.error-message {
+  color: red;
+}
+
+/* Apply styles for the "No tasks yet" message */
+.no-tasks-message {
+  font-style: italic;
+  color: #888;
+}
