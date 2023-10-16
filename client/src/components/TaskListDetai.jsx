@@ -12,12 +12,13 @@ const TaskListDetail = () => {
   });
 
   const [taskLists, setTaskLists] = useState([]);
-  const [tasks, setTasks] = useState([]);
+  const [listTasks, setTasks] = useState([]);
   const [accessToken, setAccessToken] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showForm, setShowForm] = useState(false);
-  const [labels, setLabels] = useState([]);
+  const [labelsList, setLabels] = useState([]);
+  const [selectedTaskListId, setSelectedTaskListId] = useState("");
 
   useEffect(() => {
     // Get the access token stored in the local storage
@@ -34,7 +35,7 @@ const TaskListDetail = () => {
       // Fetch the individual task list and its tasks by ID from the backend API
       const fetchData = async () => {
         try {
-          const taskListResponse = await fetch(`/tasklist/${id}`, {
+          const taskListResponse = await fetch(`/tasklist`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -47,7 +48,7 @@ const TaskListDetail = () => {
           }
 
           const taskListData = await taskListResponse.json();
-          console.log(taskListData);
+          console.log("Task lists:", taskListData);
           setTaskLists(taskListData);
 
           const tasksResponse = await fetch(`/tasks`, {
@@ -81,6 +82,7 @@ const TaskListDetail = () => {
           const labelsData = await labelsResponse.json();
           console.log("Labels response:", labelsData);
           setLabels(labelsData);
+          console.log(labelsList);
 
           setIsLoading(false);
         } catch (error) {
@@ -90,8 +92,12 @@ const TaskListDetail = () => {
 
       // Call the fetchData function
       fetchData();
+      console.log("Labels", labelsList);
     }
   }, [accessToken, id]);
+
+  console.log("Task Lists State:", taskLists); // Log the task lists state
+  console.log("Labels State:", labelsList);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -141,6 +147,7 @@ const TaskListDetail = () => {
       const selectedTaskList = taskLists.find(
         (taskList) => taskList.title === newTask.task_list_name
       );
+      console.log("Selected:", selectedTaskList);
 
       if (!selectedTaskList) {
         setError("Task list not found!");
@@ -208,6 +215,15 @@ const TaskListDetail = () => {
     }
   };
 
+  const handleTaskListChange = (e) => {
+    const { value } = e.target;
+    setSelectedTaskListId(value);
+    setNewTask((prevTask) => ({
+      ...prevTask,
+      task_list_name: value,
+    }));
+  };
+
   const handleLabelSelection = (e) => {
     const { value } = e.target;
     // Check if the label is already selected, if so, remove it; otherwise, add it
@@ -271,42 +287,50 @@ const TaskListDetail = () => {
                     </div>
                     <div className="mb-3">
                       <label htmlFor="task_list_name">Task List:</label>
-                      <select
-                        className="form-select"
-                        name="task_list_name"
-                        id="task_list_name"
-                        value={newTask.task_list_name}
-                        onChange={handleInputChange}
-                      >
-                        <option value="">Select a Task List</option>
-                        {taskLists.map((taskList) => (
-                          <option key={taskList.id} value={taskList.title}>
-                            {taskList.title}
-                          </option>
-                        ))}
-                      </select>
+                      {taskLists.length > 0 ? ( // Check if taskLists data is available
+                        <select
+                          className="form-select"
+                          name="task_list_name"
+                          id="task_list_name"
+                          value={newTask.task_list_name}
+                          onChange={handleTaskListChange}
+                        >
+                          <option value="">Select a Task List</option>
+                          {taskLists.map((taskList) => (
+                            <option key={taskList.id} value={taskList.id}>
+                              {taskList.title}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        <p>Loading task lists...</p>
+                      )}
                     </div>
                     <div className="mb-3">
                       <label htmlFor="labels">Labels:</label>
-                      <select
-                        className="form-select"
-                        name="labels"
-                        id="labels"
-                        multiple
-                        value={newTask.labels}
-                        onChange={handleLabelSelection}
-                      >
-                        {labels && labels.labels ? (
-                          labels.labels.map((label) => (
-                            <option key={label.id} value={label.id}>
+                      {labelsList.length > 0 ? (
+                        <select
+                          className="form-select"
+                          name="label-list"
+                          id="label-list"
+                          value={newTask.labels}
+                          onChange={handleLabelSelection}
+                          multiple 
+                        >
+                          {labelsList.map((label) => (
+                            <option
+                              key={label.id}
+                              value={label.id}
+                              selected={newTask.labels.includes(label.id)}
+                            >
                               {label.name}
                             </option>
-                          ))
-                        ) : (
-                          <option value="">Loading labels...</option>
-                        )}
-                      </select>
-                    </div>
+                          ))}
+                        </select>
+                      ) : (
+                        <p>Loading labels...</p>
+                      )}
+                    </div>{" "}
                     <button
                       type="button"
                       className="btn btn-success"
@@ -317,9 +341,9 @@ const TaskListDetail = () => {
                   </form>
                 )}
               </div>
-              {tasks.length > 0 ? (
+              {listTasks.length > 0 ? (
                 <ul>
-                  {tasks.map((task) => (
+                  {listTasks.map((task) => (
                     <li key={task.id}>
                       <input
                         type="checkbox"

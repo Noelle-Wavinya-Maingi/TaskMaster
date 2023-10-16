@@ -25,6 +25,7 @@ const Dashboard = () => {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const data = await response.json();
+        console.log("Data from my API:" , data);
         setTaskLists(data.task_lists || []);
       } catch (error) {
         console.error("Error fetching task lists:", error);
