@@ -296,16 +296,15 @@ const TaskListDetail = () => {
                         value={newTask.labels}
                         onChange={handleLabelSelection}
                       >
-                        {Array.isArray(labels.labels) ? (
-  labels.labels.map((label) => (
-    <option key={label.id} value={label.id}>
-      {label.name}
-    </option>
-  ))
-) : (
-  <option value="">Loading labels...</option>
-)}
-
+                        {labels && labels.labels ? (
+                          labels.labels.map((label) => (
+                            <option key={label.id} value={label.id}>
+                              {label.name}
+                            </option>
+                          ))
+                        ) : (
+                          <option value="">Loading labels...</option>
+                        )}
                       </select>
                     </div>
                     <button

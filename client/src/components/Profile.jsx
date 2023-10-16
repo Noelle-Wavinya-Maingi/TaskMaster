@@ -15,7 +15,7 @@ const Profile = () => {
       fetch("/account", {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          "Authorization": `Bearer ${accessToken}`,
         },
       })
         .then((response) => {
@@ -42,7 +42,13 @@ const Profile = () => {
   // Function to handle the update button click
   const handleUpdateClick = () => {
     // Redirect or navigate to the update profile page
-    navigate("/update-profile"); 
+    navigate("/update-profile");
+  };
+
+  // Function to check if the image URL is valid
+  const isValidImageUrl = (url) => {
+    // Check if the URL starts with a valid image scheme (http, https, data)
+    return /^https?:\/\//.test(url) || /^data:image\//.test(url);
   };
 
   return (
@@ -53,12 +59,16 @@ const Profile = () => {
           <p>Loading user profile...</p>
         ) : user ? (
           <div className="card text-center">
-            <img
-              src={user.image_url}
-              alt={user.username}
-              className="card-img-top rounded-circle mx-auto"
-              style={{ width: "150px", height: "150px" }} 
-            />
+            {isValidImageUrl(user.image_url) ? (
+              <img
+                src={user.image_url}
+                alt={user.username}
+                className="card-img-top rounded-circle mx-auto"
+                style={{ width: "150px", height: "150px" }}
+              />
+            ) : (
+              <p>Invalid image URL</p>
+            )}
             <div className="card-body">
               <h5 className="card-title">{user.username}</h5>
               <p className="card-text">
